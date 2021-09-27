@@ -18,20 +18,33 @@ export const Subheading = css`
 
 export const HeaderStyleTop = css`
   height: 180px;
-  margin: 5px 0px 5px 0px;
   background-color: #4d94c8;
   color: #fff;
   display: flex;
   justify-content: space-around;
   background-image: url(${Headerimage});
+  align-items: center;
+  position: relative;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 10px;
+  margin: auto;
+  width: 60%;
 `;
 
 export const HeaderStyleBottom = css`
-  margin: 5px 0px 5px 0px;
+  margin: auto;
+  height: 80px;
   background-color: #89cdff;
   color: #fff;
   display: flex;
   justify-content: space-around;
+  width: 60%;
+  position: relative;
+  align-items: center;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 10px;
 `;
 
 export const RefreshButton = css`
@@ -48,6 +61,38 @@ export const RefreshButton = css`
   }
   &:disabled {
     background-color: #ced4da;
+    opacity: 0.4;
+  }
+`;
+
+export const fancyRefreshButton = css`
+  height: 50px;
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+  border-style: none;
+  border-radius: 2em;
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 200;
+  color: #ffffff;
+  background-color: #4eb5f1;
+  text-align: center;
+  transition: all 0.2s;
+  &:hover {
+    background-color: #4095c6;
+  }
+  @media all and (max-width: 30em) {
+     & {
+      display: block;
+      margin: 0.2em auto;
+    }
+  }
+  &:active {
+    transform: scale(0.96);
+  }
+  &:disabled {
     opacity: 0.4;
   }
 `;

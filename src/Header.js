@@ -2,37 +2,14 @@
 
 import { css } from '@emotion/react';
 import {
+  fancyRefreshButton,
   HeaderStyleBottom,
   HeaderStyleTop,
   Heading,
-  RefreshButton,
   Subheading,
 } from './Header.styles.js';
 
 /** @jsxImportSource @emotion/react */
-
-/* function Timer() {
-  const countDownDate = new Date('Jan 5, 2022').getTime();
-  const x = setInterval(function () {
-    // Get today's date and time
-    const now = new Date().getTime();
-
-    // Find the distance between now and the count down date
-    const distance = countDownDate - now;
-
-    // Time calculations for days, hours, minutes and seconds
-    const days = Math.floor(distance / 1000);
-
-    // Display the result in the element with id="demo"
-    document.getElementById('root').innerHTML = days + 'd ';
-
-    // If the count down is finished, write some text
-    if (distance < 0) {
-      clearInterval(x);
-      document.getElementById('root').innerHTML = 'EXPIRED';
-    }
-  }, 1000);
-} */
 
 export default function Header() {
   return (
@@ -44,7 +21,7 @@ export default function Header() {
       </div>
       <div css={HeaderStyleBottom}>
         <h3>Add or edit your guests below by using the form</h3>
-        <button css={RefreshButton}>Refresh page</button>
+        <button css={fancyRefreshButton}>Refresh page</button>
       </div>
     </div>
   );

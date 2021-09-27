@@ -1,3 +1,4 @@
+import { fancyRefreshButton } from './Header.styles';
 import { InputContainer } from './Input.styles';
 
 export default function Input() {
@@ -7,10 +8,13 @@ export default function Input() {
         First name: <input />
         <p />
         Last name: <input />
-        <p />
-        <button>Add guest</button>
-        <p />
-        <button>Delete input</button>
+      </div>
+      <p />
+      <div>
+        <span>
+          <button css={fancyRefreshButton}>Add guest</button>{' '}
+          <button css={fancyRefreshButton}>Reset input</button>
+        </span>
       </div>
     </div>
   );
