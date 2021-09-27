@@ -1,9 +1,7 @@
 import { css } from '@emotion/react';
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
-import Header from './Header';
 import Headerimage from './images/fireworks_background.jpg';
-import Input from './Input';
 
 // Main heading container
 const header = css`
@@ -24,27 +22,37 @@ const subheader = css`
   font-size: 36px;
   font-family: 'Birthstone', sans-serif;
   margin-bottom: 20px;
+  margin-top: 30px;
+  font-weight: bold;
 `;
 
-// Container for inputfield
+const footer = css`
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 20px;
+`;
+
+// Container for input fields
 const input = css`
   width: auto;
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: auto;
-  justify-content: space-around;
   font-size: 14px;
-  margin: 20 20 20 20px;
 `;
 
-// Inputfield buttons
+// Input fields
 const inputField = css`
+  display: auto;
   height: 35px;
-  width: 35%;
+  width: 40%;
   margin-bottom: 5px;
   margin-right: 3px;
   text-align: center;
   border-radius: 2em;
+  justify-content: center;
+  align-items: center;
 `;
 
 const table = css`
@@ -52,8 +60,8 @@ const table = css`
   display: flex;
   margin: auto;
   justify-content: center;
-  font-size: 14px;
-  padding: 30px;
+  font-size: 18px;
+  padding: 10px;
 `;
 
 const buttonContainer = css`
@@ -63,11 +71,12 @@ const buttonContainer = css`
   margin: auto;
   justify-content: center;
   font-size: 14px;
-  padding: 10px;
+  padding: 20px;
 `;
 
 const button = css`
   height: 35px;
+  width: 75px;
   display: inline-block;
   padding: 0.3em 1.2em;
   margin: 0 0.3em 0.3em 0;
@@ -266,7 +275,7 @@ function App() {
           <form onSubmit={handleSubmit}>
             <input
               css={inputField}
-              placeholder="Last name"
+              placeholder="Last Name"
               id="lastName"
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -276,11 +285,17 @@ function App() {
               id="firstName"
               onChange={(e) => setFirstName(e.target.value)}
             />{' '}
-            <button css={button}>Addg</button>
+            <p />
+            <div css={buttonContainer}>
+              <button css={button}>Add</button>{' '}
+              <button css={button}>Reset</button>{' '}
+              <button css={button}>Refresh</button>
+            </div>
           </form>
         </div>
 
         <div>
+          <div css={subheader}>Guest List</div>
           <div>
             <table css={table}>
               <tbody>
@@ -335,6 +350,16 @@ function App() {
           </div>
         </div>
       </section>
+      <p />
+      <div css={footer}>
+        <center>
+          made with{' '}
+          <span role="img" aria-label="heart">
+            ❤️
+          </span>{' '}
+          by Mathias Lukas
+        </center>
+      </div>
     </div>
   );
 }
