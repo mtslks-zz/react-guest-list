@@ -25,7 +25,7 @@ const header = css`
 const subheader = css`
   text-align: center;
   font-size: 36px;
-  font-family: 'Birthstone', sans-serif;
+  font-family: 'Lato', sans-serif;
   margin-bottom: 20px;
   margin-top: 30px;
   font-weight: bold;
@@ -161,6 +161,8 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [checkbox, setCheckbox] = useState({});
   const [loading, setLoading] = useState(false);
+  const [allGuests, setAllGuests] = useState('');
+  const checkboxFunction = Object.keys(checkbox);
 
   // Fetching data from server
   useEffect(() => {
@@ -176,8 +178,6 @@ function App() {
   if (!loading) {
     return <div>Guestlist Application is loading...</div>;
   }
-
-  const checkboxFunction = Object.keys(checkbox);
 
   // Entry submit functionality:
   function handleSubmit(e) {
@@ -268,9 +268,7 @@ function App() {
         <div css={header}>
           <h1>New Year's Bash 2021</h1>
         </div>
-        <div css={subheader}>
-          <h3>Please enter guest details:</h3>
-        </div>
+        <div css={subheader}>Add guest details</div>
         <div css={input}>
           <form onSubmit={handleSubmit}>
             <label htmlFor="firstName">First name:</label>
@@ -294,55 +292,53 @@ function App() {
           </form>
         </div>
 
+        <div css={subheader}>Attendees</div>
         <div>
-          <div css={subheader}>Guest List</div>
-          <div>
-            <table css={table}>
-              <tbody>
-                <tr>
-                  <th>Modify</th>
-                  <th>Name</th>
-                  <th>First Name</th>
-                  <th>RSVP Status</th>
+          <table css={table}>
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <th>First Name</th>
+                <th>RSVP Status</th>
+                <th>Modify</th>
+              </tr>
+              {guestlist.map((entry) => (
+                <tr key={entry.id}>
+                  <th>{entry.lastName}</th>
+                  <th>{entry.firstName}</th>
+                  <th>{entry.attending}</th>
+                  <input
+                    type="checkbox"
+                    defaultChecked={checkbox[entry.id]}
+                    onChange={() => {
+                      setCheckbox({ ...checkbox, [entry.id]: true });
+                    }}
+                  />
                 </tr>
-                {guestlist.map((entry) => (
-                  <tr key={entry.id}>
-                    <input
-                      type="checkbox"
-                      defaultChecked={checkbox[entry.id]}
-                      onChange={() => {
-                        setCheckbox({ ...checkbox, [entry.id]: true });
-                      }}
-                    />
-                    <th>{entry.lastName}</th>
-                    <th>{entry.firstName}</th>
-                    <th>{entry.attending}</th>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div css={buttonContainer}>
-            <button css={button} type="button" onClick={(e) => handleAttend(e)}>
-              Confirm
-            </button>
-            <button
-              css={buttonCancel}
-              type="button"
-              onClick={(e) => handleNotAttend(e)}
-            >
-              Cancel
-            </button>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div css={buttonContainer}>
+          <button css={button} type="button" onClick={(e) => handleAttend(e)}>
+            Confirm
+          </button>
+          <button
+            css={buttonCancel}
+            type="button"
+            onClick={(e) => handleNotAttend(e)}
+          >
+            Cancel
+          </button>
 
-            <button
-              css={button}
-              type="button"
-              onClick={(item) => handleDelete(item.id)}
-              id="delete guest"
-            >
-              Delete
-            </button>
-          </div>
+          <button
+            css={button}
+            type="button"
+            onClick={(item) => handleDelete(item.id)}
+            id="delete guest"
+          >
+            Delete
+          </button>
         </div>
       </section>
       <p />
