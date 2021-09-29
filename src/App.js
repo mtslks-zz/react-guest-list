@@ -3,6 +3,11 @@ import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import Headerimage from './images/fireworks_background.jpg';
 
+// Main page Container
+const container = css`
+  background: linear-gradient(#0c7b93, #142850);
+`;
+
 // Main heading container
 const header = css`
   width: auto;
@@ -24,12 +29,15 @@ const subheader = css`
   margin-bottom: 20px;
   margin-top: 30px;
   font-weight: bold;
+  color: white;
 `;
 
 const footer = css`
   text-align: center;
   font-size: 12px;
   margin-bottom: 20px;
+  color: white;
+  padding: 30px;
 `;
 
 // Container for input fields
@@ -40,28 +48,31 @@ const input = css`
   justify-content: center;
   margin: auto;
   font-size: 14px;
+  color: white;
+  font-family: 'Lato', sans-serif;
 `;
 
 // Input fields
 const inputField = css`
   display: auto;
   height: 35px;
-  width: 40%;
-  margin-bottom: 5px;
-  margin-right: 3px;
+  width: 50%;
+  margin: 5px;
   text-align: center;
   border-radius: 2em;
-  justify-content: center;
-  align-items: center;
+  font-family: 'Lato', sans-serif;
 `;
 
 const table = css`
-  width: 70%;
-  display: flex;
+  width: 50%;
   margin: auto;
-  justify-content: center;
-  font-size: 18px;
-  padding: 10px;
+  font-size: 14px;
+  padding: 10px 30px 10px 40px;
+  color: white;
+  border-style: dashed;
+  border-radius: 1.5em;
+  text-align: left;
+  font-family: 'Lato', sans-serif;
 `;
 
 const buttonContainer = css`
@@ -82,7 +93,7 @@ const button = css`
   margin: 0 0.3em 0.3em 0;
   border-style: none;
   border-radius: 2em;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Lato', sans-serif;
   box-sizing: border-box;
   text-decoration: none;
   font-weight: 200;
@@ -114,7 +125,7 @@ const buttonCancel = css`
   margin: 0 0.3em 0.3em 0;
   border-style: none;
   border-radius: 2em;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Lato', sans-serif;
   box-sizing: border-box;
   text-decoration: none;
   font-weight: 200;
@@ -144,10 +155,12 @@ const baseUrl = 'https://ml-react-guest-list.herokuapp.com';
 
 function App() {
   const [guestlist, setGuestlist] = useState();
+
   // Guest List input fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [checkbox, setCheckbox] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetching data from server
   useEffect(() => {
@@ -155,31 +168,18 @@ function App() {
       const response = await fetch(`${baseUrl}/`);
       const data = await response.json();
       setGuestlist(data);
+      setIsLoading(true);
     };
     getGuestlist();
   }, []);
 
-  // Object.keys() returns an array of strings which are values of specific key of the object
-  const checkboxKeys = Object.keys(checkbox);
+  const checkboxFunction = Object.keys(checkbox);
 
-  if (!guestlist) {
-    return (
-      <div
-        style={{
-          familyFont: 'Roboto',
-          fontWeight: '300',
-          color: 'navy',
-          fontSize: '20px',
-          textAlign: 'center',
-          marginTop: '20rem',
-        }}
-      >
-        Guestlist Application is loading...
-      </div>
-    );
+  if (!isLoading) {
+    return <div>Guestlist Application is loading...</div>;
   }
 
-  // When the submit button is clicked
+  // Entry submit functionality:
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -204,10 +204,10 @@ function App() {
     createNewGuest();
   }
 
-  // When the delete button is clicked
+  // When the delete button is clicked, the selected user is deleted from API
   function handleDelete() {
     async function deleteGuest() {
-      const response = await fetch(`${baseUrl}/${checkboxKeys}`, {
+      const response = await fetch(`${baseUrl}/${checkboxFunction}`, {
         method: 'DELETE',
       });
 
@@ -222,13 +222,13 @@ function App() {
   // Function to change state of guest to "attending"
   function handleAttend() {
     async function attendingGuest() {
-      const response = await fetch(`${baseUrl}/${checkboxKeys}`, {
+      const response = await fetch(`${baseUrl}/${checkboxFunction}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          attending: true,
+          attending: '✅',
         }),
       });
 
@@ -243,13 +243,13 @@ function App() {
   // Function to change state of guest to "not attending"
   function handleNotAttend() {
     async function notAttendingGuest() {
-      const response = await fetch(`${baseUrl}/${checkboxKeys}`, {
+      const response = await fetch(`${baseUrl}/${checkboxFunction}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          attending: false,
+          attending: '❌',
         }),
       });
 
@@ -263,7 +263,7 @@ function App() {
 
   // App rendering
   return (
-    <div>
+    <div css={container}>
       <section>
         <div css={header}>
           <h1>New Year's Bash 2021</h1>
@@ -273,23 +273,23 @@ function App() {
         </div>
         <div css={input}>
           <form onSubmit={handleSubmit}>
+            <label htmlFor="firstName">First name:</label>
             <input
-              css={inputField}
-              placeholder="Last Name"
-              id="lastName"
-              onChange={(e) => setLastName(e.target.value)}
-            />
-            <input
-              css={inputField}
-              placeholder="First name"
               id="firstName"
-              onChange={(e) => setFirstName(e.target.value)}
-            />{' '}
-            <p />
+              css={inputField}
+              value={firstName}
+              onChange={(event) => setFirstName(event.currentTarget.value)}
+            />
+            <br />
+            <label htmlFor="lastName">Last name:</label>
+            <input
+              id="lastName"
+              css={inputField}
+              value={lastName}
+              onChange={(event) => setLastName(event.currentTarget.value)}
+            />
             <div css={buttonContainer}>
-              <button css={button}>Add</button>{' '}
-              <button css={button}>Reset</button>{' '}
-              <button css={button}>Refresh</button>
+              <button css={button}>Add</button>
             </div>
           </form>
         </div>
@@ -300,28 +300,23 @@ function App() {
             <table css={table}>
               <tbody>
                 <tr>
-                  <th>Select</th>
-                  <th>Last Name</th>
+                  <th>Modify</th>
+                  <th>Name</th>
                   <th>First Name</th>
-                  <th>Attending?</th>
+                  <th>RSVP Status</th>
                 </tr>
-
-                {guestlist.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        defaultChecked={checkbox[item.id]}
-                        onChange={() => {
-                          setCheckbox({ ...checkbox, [item.id]: true });
-                        }}
-                      />
-                    </td>
-                    <td> {item.lastName} </td>
-
-                    <td> {item.firstName} </td>
-
-                    <td>{`${item.attending}`}</td>
+                {guestlist.map((entry) => (
+                  <tr key={entry.id}>
+                    <input
+                      type="checkbox"
+                      defaultChecked={checkbox[entry.id]}
+                      onChange={() => {
+                        setCheckbox({ ...checkbox, [entry.id]: true });
+                      }}
+                    />
+                    <th>{entry.lastName}</th>
+                    <th>{entry.firstName}</th>
+                    <th>{entry.attending}</th>
                   </tr>
                 ))}
               </tbody>
