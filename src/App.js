@@ -160,7 +160,7 @@ function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [checkbox, setCheckbox] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Fetching data from server
   useEffect(() => {
@@ -168,16 +168,16 @@ function App() {
       const response = await fetch(`${baseUrl}/`);
       const data = await response.json();
       setGuestlist(data);
-      setIsLoading(true);
+      setLoading(true);
     };
     getGuestlist();
   }, []);
 
-  const checkboxFunction = Object.keys(checkbox);
-
-  if (!isLoading) {
+  if (!loading) {
     return <div>Guestlist Application is loading...</div>;
   }
+
+  const checkboxFunction = Object.keys(checkbox);
 
   // Entry submit functionality:
   function handleSubmit(e) {
