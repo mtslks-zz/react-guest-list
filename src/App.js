@@ -87,7 +87,7 @@ const buttonContainer = css`
 
 const button = css`
   height: 35px;
-  width: 75px;
+  width: 80px;
   display: inline-block;
   padding: 0.3em 1.2em;
   margin: 0 0.3em 0.3em 0;
@@ -150,19 +150,49 @@ const buttonCancel = css`
   }
 `;
 
+const buttonDeleteAll = css`
+  height: 35px;
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+  border-style: none;
+  border-radius: 2em;
+  font-family: 'Lato', sans-serif;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 200;
+  color: #ffffff;
+  background-color: #0c7a14;
+  text-align: center;
+  transition: all 0.2s;
+  &:hover {
+    background-color: #11bf1e;
+  }
+  @media all and (max-width: 30em) {
+     & {
+      display: block;
+      margin: 0.2em auto;
+    }
+  }
+  &:active {
+    transform: scale(0.96);
+  }
+  &:disabled {
+    opacity: 0.4;
+  }
+`;
+
 // API server address
 const baseUrl = 'https://ml-react-guest-list.herokuapp.com';
 
 function App() {
-  const [guestlist, setGuestlist] = useState();
-
   // Guest List input fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [checkbox, setCheckbox] = useState({});
   const [loading, setLoading] = useState(false);
-  const [allGuests, setAllGuests] = useState('');
   const checkboxFunction = Object.keys(checkbox);
+  const [guestlist, setGuestlist] = useState([]);
 
   // Fetching data from server
   useEffect(() => {
@@ -175,16 +205,12 @@ function App() {
     getGuestlist();
   }, []);
 
-  if (!loading) {
-    return <div>Guestlist Application is loading...</div>;
-  }
-
   // Entry submit functionality:
   function handleSubmit(e) {
     e.preventDefault();
 
     // ...then create a new guest on server
-    async function createNewGuest() {
+    const createNewGuest = async () => {
       const response = await fetch(`${baseUrl}/`, {
         method: 'POST',
         headers: {
@@ -195,12 +221,9 @@ function App() {
           lastName: lastName,
         }),
       });
-
-      const createdGuest = await response.json();
-      window.location.reload();
-      return createdGuest;
-    }
-
+      const createdGuests = await response.json();
+      setGuestlist([...guestlist, createdGuests]);
+    };
     createNewGuest();
   }
 
@@ -219,6 +242,18 @@ function App() {
     deleteGuest();
   }
 
+  const deleteAllGuests = async () => {
+    for (let i = 0; i < guestlist.length; i++) {
+      const guestId = guestlist[i].id;
+      const response = await fetch(`${baseUrl}/${guestId}`, {
+        method: 'DELETE',
+      });
+      response.status === 200
+        ? setGuestlist([])
+        : alert('There was an error trying to delete all guests');
+    }
+  };
+
   // Function to change state of guest to "attending"
   function handleAttend() {
     async function attendingGuest() {
@@ -227,13 +262,9 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          attending: '✅',
-        }),
+        body: JSON.stringify({ attending: '✅' }),
       });
-
       const updatedGuest = await response.json();
-
       window.location.reload();
       return updatedGuest;
     }
@@ -274,6 +305,7 @@ function App() {
             <label htmlFor="firstName">First name:</label>
             <input
               id="firstName"
+              disabled={!loading}
               css={inputField}
               value={firstName}
               onChange={(event) => setFirstName(event.currentTarget.value)}
@@ -282,6 +314,7 @@ function App() {
             <label htmlFor="lastName">Last name:</label>
             <input
               id="lastName"
+              disabled={!loading}
               css={inputField}
               value={lastName}
               onChange={(event) => setLastName(event.currentTarget.value)}
@@ -292,30 +325,34 @@ function App() {
           </form>
         </div>
 
-        <div css={subheader}>Attendees</div>
+        <div css={subheader}>Guest List</div>
         <div>
           <table css={table}>
             <tbody>
               <tr>
                 <th>Name</th>
                 <th>First Name</th>
-                <th>RSVP Status</th>
-                <th>Modify</th>
+                <th>RSVP Status </th>
+                <th>Selector</th>
               </tr>
-              {guestlist.map((entry) => (
-                <tr key={entry.id}>
-                  <th>{entry.lastName}</th>
-                  <th>{entry.firstName}</th>
-                  <th>{entry.attending}</th>
-                  <input
-                    type="checkbox"
-                    defaultChecked={checkbox[entry.id]}
-                    onChange={() => {
-                      setCheckbox({ ...checkbox, [entry.id]: true });
-                    }}
-                  />
-                </tr>
-              ))}
+              {!loading ? (
+                <p>Guest list loading... please wait!</p>
+              ) : (
+                guestlist.map((entry) => (
+                  <tr key={entry.id}>
+                    <th>{entry.lastName}</th>
+                    <th>{entry.firstName}</th>
+                    <th>{entry.attending}</th>
+                    <input
+                      type="checkbox"
+                      defaultChecked={checkbox[entry.id]}
+                      onChange={() => {
+                        setCheckbox({ ...checkbox, [entry.id]: true });
+                      }}
+                    />
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -338,6 +375,14 @@ function App() {
             id="delete guest"
           >
             Delete
+          </button>
+          <button
+            css={buttonDeleteAll}
+            type="button"
+            onClick={() => deleteAllGuests()}
+            id="clear all guests"
+          >
+            Clear all
           </button>
         </div>
       </section>
